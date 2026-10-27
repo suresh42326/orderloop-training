@@ -104,6 +104,21 @@ def get_order(order_id: int, conn: sqlite3.Connection = Depends(get_conn), now: 
     }
 
 
+@app.get("/orders/{order_id}/refund-summary")
+def refund_summary(order_id: int, conn: sqlite3.Connection = Depends(get_conn), now: datetime = Depends(get_now)):
+    order, items, refunded = load_order(conn, order_id)
+    row = conn.execute(
+        "SELECT COUNT(*) AS count, MAX(created_at) AS latest FROM refunds WHERE order_id = ?", (order_id,)
+    ).fetchone()
+    return {
+        "order_id": order_id,
+        "refund_count": row["count"],
+        "refunded_cents": refunded,
+        "remaining_cents": order_eligibility(order, items, refunded, now).max_refundable_cents,
+        "last_refund_at": row["latest"],
+    }
+
+
 @app.post("/orders/{order_id}/refunds", status_code=201)
 def create_refund(
     order_id: int,
