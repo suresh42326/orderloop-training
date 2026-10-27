@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+import pytest
+
 from app import rules
 from app.rules import Item
 
@@ -51,3 +53,22 @@ def test_reason_must_be_three_to_two_hundred_characters():
 def test_undelivered_order_is_not_eligible():
     el = rules.eligibility(None, [tent()], 0, NOW)
     assert "not_delivered" in el.blockers
+
+
+# AC-1
+def test_amount_above_threshold_requires_lead_approval():
+    """AC-1: One cent above the threshold requires approval."""
+    assert rules.requires_lead_approval(rules.LEAD_APPROVAL_THRESHOLD_CENTS + 1) is True
+
+
+# AC-2
+def test_amount_exactly_at_threshold_needs_no_approval():
+    """AC-2: Exactly the threshold does not require approval."""
+    assert rules.requires_lead_approval(rules.LEAD_APPROVAL_THRESHOLD_CENTS) is False
+
+
+# AC-3
+def test_float_amount_is_rejected_as_not_cents():
+    """AC-3: A non-integer amount raises TypeError."""
+    with pytest.raises(TypeError):
+        rules.requires_lead_approval(20000.5)
