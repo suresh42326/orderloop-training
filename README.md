@@ -42,7 +42,7 @@ cd backend
 uv run pytest -q
 ```
 
-Expected: `19 passed`.
+Expected on the `capstone` branch: `25 passed`, including 5 for the refund summary (`GET /orders/{order_id}/refund-summary`). The count differs on other branches.
 
 ## How the labs use this repo
 

@@ -16,4 +16,4 @@ Separate Claude Code review calls: 0. Overall assistant token usage and cost wer
 Run the interactive guardrail and review exercises and record their outputs. Add explicit tests for final-sale items and multiple timestamp ordering, and measure model usage.
 
 ## Pull request
-https://github.com/suresh42326/orderloop-training/pull/1 is open on the user's fork. GitHub CI status must be checked after this retrospective is pushed.
+https://github.com/suresh42326/orderloop-training/pull/1 is open on the user's fork. Its only reported status is CodeRabbit (success). No GitHub Actions run exists on the fork yet, probably because Actions is not enabled there, so the green-CI check is still outstanding.
