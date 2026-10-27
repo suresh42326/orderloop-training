@@ -10,6 +10,7 @@ REFUND_WINDOW_DAYS = 30
 LEAD_APPROVAL_THRESHOLD_CENTS = 20_000
 MIN_REASON_LENGTH = 3
 MAX_REASON_LENGTH = 200
+RESTOCKING_FEE_PERCENT = 10
 
 
 @dataclass(frozen=True)
@@ -30,6 +31,16 @@ class Item:
     def refundable(self) -> bool:
         return not (self.final_sale or self.gift_card)
 
+    @property
+    def restocking_fee_cents(self) -> int:
+        if not (self.opened and self.refundable):
+            return 0
+        return self.total_cents * RESTOCKING_FEE_PERCENT // 100  # integer floor: rounds down
+
+    @property
+    def refundable_cents(self) -> int:
+        return self.total_cents - self.restocking_fee_cents
+
 
 @dataclass(frozen=True)
 class Eligibility:
@@ -39,6 +50,7 @@ class Eligibility:
     max_refundable_cents: int
     qualifying_skus: list[str] = field(default_factory=list)
     blockers: list[str] = field(default_factory=list)
+    restocking_fee_cents: int = 0
 
 
 @dataclass(frozen=True)
@@ -62,7 +74,7 @@ def eligibility(
 ) -> Eligibility:
     days = days_since_delivery(delivered_at, now)
     qualifying = [i for i in items if i.refundable]
-    max_cents = max(sum(i.total_cents for i in qualifying) - already_refunded_cents, 0)
+    max_cents = max(sum(i.refundable_cents for i in qualifying) - already_refunded_cents, 0)
     late = days is not None and days > REFUND_WINDOW_DAYS  # exactly 30 days is still on time
 
     blockers: list[str] = []
@@ -80,6 +92,7 @@ def eligibility(
         max_refundable_cents=max_cents,
         qualifying_skus=[i.sku for i in qualifying],
         blockers=blockers,
+        restocking_fee_cents=sum(i.restocking_fee_cents for i in qualifying),
     )
 
 
