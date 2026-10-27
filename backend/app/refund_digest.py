@@ -7,27 +7,19 @@ Inputs are plain dicts:
   customers: {"id": str, "name": str, "email": str}
 """
 
-import logging
-
-log = logging.getLogger("refund_digest")
-
-LARGE_REFUND_CENTS = 20000
+from app.rules import LEAD_APPROVAL_THRESHOLD_CENTS
 
 
 def build_digest(refunds, customers):
-    total = 0
-    for r in refunds:
-        total += r["amount_cents"]
-    average_cents = total / len(refunds)
-
+    total = sum(r["amount_cents"] for r in refunds)
+    average_cents = total // len(refunds) if refunds else 0
+    customer_ids = {customer["id"] for customer in customers}
     by_customer = {}
     for r in refunds:
-        for c in customers:
-            if c["id"] == r["customer_id"]:
-                log.info("refund %s for %s <%s>: %s cents", r["id"], c["name"], c["email"], r["amount_cents"])
-                by_customer[c["email"]] = by_customer.get(c["email"], 0) + r["amount_cents"]
+        key = r["customer_id"] if r["customer_id"] in customer_ids else "unknown"
+        by_customer[key] = by_customer.get(key, 0) + r["amount_cents"]
 
-    large = [r["id"] for r in refunds if r["amount_cents"] >= LARGE_REFUND_CENTS]
+    large = [r["id"] for r in refunds if r["amount_cents"] > LEAD_APPROVAL_THRESHOLD_CENTS]
 
     return {
         "count": len(refunds),
