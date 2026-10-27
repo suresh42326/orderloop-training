@@ -17,9 +17,9 @@ Support agents cannot process refunds above $200 through OrderLoop. They use ema
 
 | ID | Criterion | Test | Package | Status |
 |---|---|---|---|---|
-| AC-1 | WHEN the requested refund amount is above the lead-approval threshold, the rules SHALL report that lead approval is required | test_amount_above_threshold_requires_lead_approval | WP-1 | todo |
-| AC-2 | WHEN the requested refund amount is exactly the threshold, the rules SHALL report that no lead approval is required | test_amount_exactly_at_threshold_needs_no_approval | WP-1 | todo |
-| AC-3 | IF the requested amount is not an integer number of cents, THEN the rules SHALL raise TypeError | test_float_amount_is_rejected_as_not_cents | WP-1 | todo |
+| AC-1 | WHEN the requested refund amount is above the lead-approval threshold, the rules SHALL report that lead approval is required | test_amount_above_threshold_requires_lead_approval | WP-1 | done |
+| AC-2 | WHEN the requested refund amount is exactly the threshold, the rules SHALL report that no lead approval is required | test_amount_exactly_at_threshold_needs_no_approval | WP-1 | done |
+| AC-3 | IF the requested amount is not an integer number of cents, THEN the rules SHALL raise TypeError | test_float_amount_is_rejected_as_not_cents | WP-1 | done |
 | AC-4 | WHEN an eligible on-time refund above the threshold is submitted, the API SHALL store it with status pending | test_large_refund_is_pending | WP-2 | todo |
 | AC-5 | WHILE a refund is pending, the API SHALL reserve its amount against the refundable maximum | test_pending_refund_reserves_amount | WP-2 | todo |
 | AC-6 | IF a caller without the lead role attempts approval, THEN the API SHALL respond with HTTP 403 | test_non_lead_cannot_approve | WP-2 | todo |
