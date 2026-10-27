@@ -23,3 +23,4 @@ Verdict: **request changes**. The change risks duplicate credits, exposes person
 
 - The diff and checklist were reviewed manually, with the course solution consulted as a reference. The interactive `/code-review` and `/security-review` commands were not run, so their findings, misses and false positives were not measured.
 - No tool false positives were assessed. Claims about unchanged tests and dependencies were checked against the diff; the missing helper was checked against the branch contents.
+- What the tool missed: unknown, because neither tool was run; the checklist independently identified the false description and missing endpoint tests.
