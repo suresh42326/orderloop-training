@@ -12,6 +12,13 @@ MIN_REASON_LENGTH = 3
 MAX_REASON_LENGTH = 200
 
 
+def requires_lead_approval(amount_cents: int) -> bool:
+    """AC-1, AC-2, AC-3: Require approval above the threshold for integer cents."""
+    if type(amount_cents) is not int:
+        raise TypeError("amount_cents must be an integer number of cents")
+    return amount_cents > LEAD_APPROVAL_THRESHOLD_CENTS
+
+
 @dataclass(frozen=True)
 class Item:
     sku: str
