@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Add a refund statistics endpoint.
+- Added an order status filter to the order list.
 
 ## 0.1.0
 
