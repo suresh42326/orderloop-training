@@ -5,12 +5,17 @@ const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 
 export default function App() {
   const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
   const [orders, setOrders] = useState<OrderSummary[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
 
   useEffect(() => {
-    listOrders(query).then(setOrders).catch(() => setOrders([]));
-  }, [query]);
+    let current = true;
+    listOrders(query, status)
+      .then((results) => { if (current) setOrders(results); })
+      .catch(() => { if (current) setOrders([]); });
+    return () => { current = false; };
+  }, [query, status]);
 
   return (
     <main>
@@ -22,6 +27,14 @@ export default function App() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          <label>
+            Status
+            <select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="">All</option>
+              <option value="delivered">delivered</option>
+              <option value="shipped">shipped</option>
+            </select>
+          </label>
           <table>
             <thead>
               <tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr>

@@ -36,7 +36,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-export const listOrders = (q: string) => request<OrderSummary[]>(`/orders?q=${encodeURIComponent(q)}`);
+export const listOrders = (q: string, status?: string) => {
+  const params = new URLSearchParams({ q });
+  if (status) params.set("status", status);
+  return request<OrderSummary[]>(`/orders?${params}`);
+};
 export const getOrder = (id: number) => request<OrderDetail>(`/orders/${id}`);
 
 export const createRefund = (id: number, amountCents: number, reason: string) =>
