@@ -10,7 +10,7 @@ The supplied solution changes rules.py despite the brief forbidding rule changes
 The response contains only the specified aggregate fields and does not expose refund reason or customer data. The endpoint preserves the existing missing-order error and existing eligibility logic. The interactive Claude code-review and guardrail exercise were not run; this was a manual checklist review.
 
 ## Cost
-Capstone model-call cost was not measured; no separate Claude Code review call was made for this feature.
+Separate Claude Code review calls: 0. Overall assistant token usage and cost were not measured.
 
 ## What I would change
 Run the interactive guardrail and review exercises and record their outputs. Add explicit tests for final-sale items and multiple timestamp ordering, and measure model usage.
