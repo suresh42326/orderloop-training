@@ -39,6 +39,8 @@ SYSTEM_PROMPT = (
 
 def local_decision(facts: dict, requested_cents: int) -> dict:
     """The same rules in plain Python. Stands in for the model in --dry-run."""
+    if requested_cents <= 0:
+        return {"recommendation": "reject", "approved_cents": 0, "reasons": ["amount_invalid"]}
     if "error" in facts:
         return {"recommendation": "reject", "approved_cents": 0, "reasons": [facts["error"]]}
     if not facts["eligible"]:
@@ -106,6 +108,9 @@ def main() -> int:
     ap.add_argument("--max-turns", type=int, default=4)
     ap.add_argument("--max-budget", type=float, default=0.25, help="USD cap for the run")
     args = ap.parse_args()
+
+    if args.requested <= 0:
+        ap.error("--requested must be greater than zero")
 
     conn, now = fixture_connection(), FIXED_NOW
     if args.dry_run:
