@@ -53,3 +53,5 @@ git switch -c lab-01
 ```
 
 Labs do not depend on each other. If you get stuck, compare with the branch `lab-NN-solution`.
+
+Project skills used by the training labs live in `.claude/skills`.
